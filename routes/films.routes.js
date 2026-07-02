@@ -17,5 +17,7 @@ router.get('/:id', getFilmById);
 
 router.post('/', createFilm);
 
+router.post('/create', createFilm);
+
 export default router;
 
