@@ -4,7 +4,8 @@ import {
     getAllFilms,
     getFilmById,
     searchFilms,
-    createFilm
+    createFilm, 
+    deleteFilm
 } from '../controllers/films.controller.js';
 
 const router = express.Router();
@@ -18,6 +19,8 @@ router.get('/:id', getFilmById);
 router.post('/', createFilm);
 
 router.post('/create', createFilm);
+
+router.delete('/:id', deleteFilm);
 
 export default router;
 

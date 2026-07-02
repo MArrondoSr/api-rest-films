@@ -2,7 +2,8 @@ import {
     getAllFilmsService,
     getFilmByIdService,
     createFilmService,
-    searchFilmsService
+    searchFilmsService,
+    deleteFilmsService
 } from '../services/films.service.js';
 
 export const getAllFilms = async (req, res) => {
@@ -56,6 +57,22 @@ export const searchFilms = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "Error al buscar películas"
+        });
+    }
+};
+
+export const deleteFilm = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        await deleteFilmService(id);
+
+        res.status(200).json({
+            message: "Película eliminada correctamente"
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error al eliminar la película"
         });
     }
 };
