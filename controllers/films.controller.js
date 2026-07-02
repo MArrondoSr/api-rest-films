@@ -65,7 +65,7 @@ export const deleteFilm = async (req, res) => {
     try {
         const id = req.params.id;
 
-        await deleteFilmService(id);
+        await deleteFilmsService(id);
 
         res.status(200).json({
             message: "Película eliminada correctamente"
