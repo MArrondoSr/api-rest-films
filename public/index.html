@@ -1,75 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-   <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="stylesheet" type="text/css" href="./estilos.css" />
-     <link rel="stylesheet" href="./reset.css" />
-      <title><h6>Página de bienvenida</h6></title>
-   </head>
-   <body style="background-color: yellowgreen;">
-   <header>
-      <div id="TituloPrincipal">
-         <h1>Películas</h1>
-        
-      </div>
-   </header>
-   <main><h2>Titulo 1</h2>
-<section><p> Películas que hay que ver</p>
-   <hr /></section>
-<article>
-    <div id="cajafotos">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Rest Films</title>
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./estilos.css" />
+</head>
 
-        <div class="galeria" id="galeria">
-            <a class="galeria__item" href="./imagenes/streets_of_fire.jpg">
-                <img src="./imagenes/streets_of_fire.jpg" alt="Calles de Fuego">
-                <p class="galeria__badge">Streets of Fire (1984)</p>
-            </a>
-        
-            <a class="galeria__item" href="./imagenes/girl_motorcycle.jpg">
-                <img src="./imagenes/girl_motorcycle.jpg" alt="The Girl in a Motorcycle">
-                <p class="galeria__badge">The girl on a motorcycle (1968)</p>
-            </a>
+<body>
+    <header class="marquesina">
+        <div class="marquesina__luces"></div>
+        <h1>API REST FILMS</h1>
+        <p>Catálogo privado de películas</p>
+    </header>
 
-            <a class="galeria__item" href="./imagenes/citizen_kane.jpg">
-                <img src="./imagenes/citizen_kane.jpg" alt="Citizen Kane">
-                <p class="galeria__badge">Citizen Kane (1941)</p>
-            </a>
+    <main class="cine">
+        <section class="cartelera">
+            <h2>Ahora en cartelera</h2>
 
-            <a class="galeria__item" href="./imagenes/gabriela.jpg">
-                <img src="./imagenes/gabriela.jpg" alt="Gabriela">
-                <p class="galeria__badge">Gabriela (1983)</p>
-            </a>
-        
-        </div>
+            <div class="galeria" id="galeria">
+                <a class="galeria__item" href="./imagenes/streets_of_fire.jpg">
+                    <img src="./imagenes/streets_of_fire.jpg" alt="Streets of Fire">
+                    <h3>Streets of Fire</h3>
+                    <p>1984</p>
+                </a>
 
-    </div>
+                <a class="galeria__item" href="./imagenes/girl_motorcycle.jpg">
+                    <img src="./imagenes/girl_motorcycle.jpg" alt="The Girl on a Motorcycle">
+                    <h3>The Girl on a Motorcycle</h3>
+                    <p>1968</p>
+                </a>
 
-  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Carrusel de imágenes">
-    <div class="lightbox__stage">
-      <img class="lightbox__img" id="lb-img" src="" alt="">
-      <button class="lightbox__btn lightbox__prev" id="lb-prev" aria-label="Anterior">❮</button>
-      <button class="lightbox__btn lightbox__next" id="lb-next" aria-label="Siguiente">❯</button>
-      <button class="lightbox__close" id="lb-close" aria-label="Cerrar">✕</button>
-    </div>
-  </div>
+                <a class="galeria__item" href="./imagenes/citizen_kane.jpg">
+                    <img src="./imagenes/citizen_kane.jpg" alt="Citizen Kane">
+                    <h3>Citizen Kane</h3>
+                    <p>1941</p>
+                </a>
 
-  <script src="./lightbox.js"></script> <!-- tu JS -->
-</article>      
+                <a class="galeria__item" href="./imagenes/gabriela.jpg">
+                    <img src="./imagenes/gabriela.jpg" alt="Gabriela">
+                    <h3>Gabriela</h3>
+                    <p>1983</p>
+                </a>
 
-<article></article>
-<article></article>      
-<hr />
-      <h3>Final</h3>
-      <span>
-<a href="./contacto/contacto.html">Formulario de contacto</a>
-</span>
-   </main>
-<footer>
-   <p class="numero">Enlaces relacionados</p>
-   <a href="http:/www.peliculas.com.br"> Pel►1culas que hay que ver </a> <br>
-   <a href="">Titulo 01</a>
-   
-</footer>      
-   </body>
+                <a class="galeria__item" href="./imagenes/spy_who_loved_me.jpg">
+                    <img src="./imagenes/spy_who_loved_me.jpg" alt="The Spy Who Loved Me">
+                    <h3>The Spy Who Loved Me</h3>
+                    <p>1977</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 API REST FILMS</p>
+    </footer>
+</body>
 </html>
