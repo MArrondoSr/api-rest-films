@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "Streets of Fire",
+    "year": 1984,
+    "director": "Walter Hill",
+    "image": "/imagenes/streets-of-fire.jpg",
+    "video": "/videos/streets-of-fire.mp4"
+  },
+  {
+    "id": 2,
+    "title": "The Girl on a Motorcycle",
+    "year": 1968,
+    "director": "Jack Cardiff",
+    "image": "/imagenes/girl-on-motorcycle.jpg",
+    "video": "/videos/girl-on-motorcycle.mp4"
+  },
+  {
+    "id": 3,
+    "title": "Citizen Kane",
+    "year": 1941,
+    "director": "Orson Welles",
+    "image": "/imagenes/citizen_kane.jpg",
+    "video": "/videos/citizen-kane.mp4"
+  },
+  {
+    "id": 4,
+    "title": "Gabriela",
+    "year": 1983,
+    "director": "Bruno Barreto",
+    "image": "/imagenes/ganriela.jpg",
+    "video": "/videos/gabriela.mp4"
+  }
+]

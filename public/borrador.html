@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Galería con Lightbox</title>
+<style>
+
+</style>
+</head>
+<body>
+
+<h1 style="text-align:center;">Brasil 1989</h1>
+
+<!-- GALERÍA (miniaturas). Reemplazá rutas por las tuyas -->
+<div class="galeria" id="galeria">
+  <a class="galeria__item" href="#" data-full="./imagenes/1989/01.jpg">
+    <img src="./imagenes/1989/01-thumb.jpg" alt="Foto 1 - Brasil 1989">
+  </a>
+  <a class="galeria__item" href="#" data-full="./imagenes/1989/02.jpg">
+    <img src="./imagenes/1989/02-thumb.jpg" alt="Foto 2 - Brasil 1989">
+  </a>
+  <a class="galeria__item" href="#" data-full="./imagenes/1989/03.jpg">
+    <img src="./imagenes/1989/03-thumb.jpg" alt="Foto 3 - Brasil 1989">
+  </a>
+  <!-- Agregá más items con data-full al JPG grande y el <img> al thumbnail -->
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Carrusel de imágenes">
+  <div class="lightbox__stage">
+    <img class="lightbox__img" id="lb-img" src="" alt="">
+    <button class="lightbox__btn lightbox__prev" id="lb-prev" aria-label="Anterior">❮</button>
+    <button class="lightbox__btn lightbox__next" id="lb-next" aria-label="Siguiente">❯</button>
+    <button class="lightbox__close" id="lb-close" aria-label="Cerrar">✕</button>
+  </div>
+</div>
+
+<script>
+  // 1) Tomamos todas las miniaturas y guardamos sus URLs grandes (data-full)
+  const thumbs = Array.from(document.querySelectorAll('.galeria__item'));
+  const images = thumbs.map(a => ({
+    full: a.dataset.full,
+    alt: a.querySelector('img')?.alt || ''
+  }));
+
+  // 2) Elements del lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const btnPrev = document.getElementById('lb-prev');
+  const btnNext = document.getElementById('lb-next');
+  const btnClose = document.getElementById('lb-close');
+
+  let current = 0;
+
+  function openLightbox(index) {
+    current = index;
+    showImage(current);
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // evita scroll del fondo
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function showImage(i) {
+    const item = images[i];
+    lbImg.src = item.full;
+    lbImg.alt = item.alt;
+  }
+
+  function next() {
+    current = (current + 1) % images.length;
+    showImage(current);
+  }
+
+  function prev() {
+    current = (current - 1 + images.length) % images.length;
+    showImage(current);
+  }
+
+  // 3) Click en miniatura → abrir lightbox
+  thumbs.forEach((a, i) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLightbox(i);
+    });
+  });
+
+  // 4) Controles
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+  btnClose.addEventListener('click', closeLightbox);
+
+  // 5) Cerrar al click fuera de la imagen
+  lb.addEventListener('click', (e) => {
+    if (e.target === lb) closeLightbox();
+  });
+
+  // 6) Teclado
+  document.addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+</script>
+</body>
+</html>

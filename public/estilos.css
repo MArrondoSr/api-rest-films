@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+  color: #222;
+}
+
+#TituloPrincipal {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+#TituloPrincipal h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+#cajafotos {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.galeria {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.galeria__item {
+  width: 220px;
+  text-align: center;
+  text-decoration: none;
+  color: #222;
+}
+
+.galeria__item img {
+  width: 100%;
+  height: 330px;
+  object-fit: contain;
+  background-color: #ddd;
+  border-radius: 8px;
+  display: block;
+}
+
+.galeria__badge {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Por ahora ocultamos el lightbox si no lo estás usando */
+.lightbox {
+  display: none;
+}
+
