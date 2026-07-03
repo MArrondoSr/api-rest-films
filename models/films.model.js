@@ -1,12 +1,3 @@
-// import fs from 'fs';
-// import path from 'path';
-// import { fileURLToPath } from 'url';
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// //ruta al jason bd
-// const dataPath = path.join(__dirname, '../data/films.json');
-
 import { db } from '../data/data.js'; 
 import { 
     collection, 
