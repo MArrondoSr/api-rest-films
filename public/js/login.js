@@ -42,7 +42,7 @@ if (responseText) {
             throw new Error(data.message || 'No se pudo iniciar sesión');
         }
 
-        localStorage.setItem('token', data.token);
+        Auth.saveToken(data.token);
 
         window.location.href = '/';
     } catch (error) {
