@@ -1,31 +1,28 @@
-import { db } from '../data/data.js'; 
-import { 
-    collection, 
-    getDocs, 
-    getDoc, 
-    addDoc, 
-    deleteDoc, 
-    doc 
-} from 'firebase/firestore'; 
+import { adminDb } from '../data/admin.js';
 
-const filmsCollection = collection(db, 'films');
+const filmsCollection = adminDb.collection('films');
 
-// Método para obtener todos los productos 
-export async function getAllFilms() { 
-    const querySnapshot = await getDocs(filmsCollection); 
-    const films = []; 
-    querySnapshot.forEach((doc) => { 
-        films.push({ id: doc.id, ...doc.data() }); 
-    }); 
-    return films; 
-};
+// Obtener todos los films
+export async function getAllFilms() {
+    const querySnapshot = await filmsCollection.get();
 
-// Buscar un film por ID
+    const films = [];
+
+    querySnapshot.forEach((doc) => {
+        films.push({
+            id: doc.id,
+            ...doc.data()
+        });
+    });
+
+    return films;
+}
+
+// Obtener un film por ID
 export async function getFilmById(id) {
-    const filmRef = doc(filmsCollection, id);
-    const filmDoc = await getDoc(filmRef);
+    const filmDoc = await filmsCollection.doc(id).get();
 
-    if (!filmDoc.exists()) {
+    if (!filmDoc.exists) {
         return null;
     }
 
@@ -35,22 +32,27 @@ export async function getFilmById(id) {
     };
 }
 
-// Método para guardar un producto en Firestore
 // Guardar un nuevo film
 export async function saveFilm(filmData) {
-    const docRef = await addDoc(filmsCollection, filmData);
+    const docRef = await filmsCollection.add(filmData);
 
     return {
         id: docRef.id,
         ...filmData
     };
 }
-// Método para eliminar un producto por su ID   
+
 // Eliminar un film por ID
 export async function deleteFilm(id) {
-    const filmRef = doc(filmsCollection, id);
+    const filmRef = filmsCollection.doc(id);
 
-    await deleteDoc(filmRef);
+    const filmDoc = await filmRef.get();
+
+    if (!filmDoc.exists) {
+        return false;
+    }
+
+    await filmRef.delete();
 
     return true;
 }

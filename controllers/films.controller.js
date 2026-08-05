@@ -11,8 +11,10 @@ export const getAllFilms = async (req, res) => {
         const films = await getAllFilmsService();
         res.status(200).json(films);
     } catch (error) {
-        res.status(500).json({
-            message: "Error al obtener las películas"
+        console.error('Error real en getAllFilms:', error);
+
+    res.status(500).json({
+        message: "Error al obtener las películas"
         });
     }
 };

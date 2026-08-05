@@ -1,20 +1,39 @@
-import { generateToken } from '../utils/token-generator.js'; 
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-const default_user = {
-     id: 1, 
-     email: "user@email.com", 
-     password: "strongPass123" 
-    } 
-    
-export async function login(req, res) { 
-    const { email, password } = req.body; 
-    
-// Acá más adelante podré verificar las credenciales del usuario // Ejemplo de usuario autenticado 
-const user = { id: 1, email }; 
+import { auth } from '../data/data.js';
+import { generateToken } from '../utils/token-generator.js';
 
-if (email === default_user.email 
-    && password === default_user.password) { 
+export async function login(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                message: 'Email y contraseña son obligatorios'
+            });
+        }
+
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        const firebaseUser = userCredential.user;
+
+        const user = {
+            id: firebaseUser.uid,
+            email: firebaseUser.email
+        };
+
         const token = generateToken(user);
-    res.json({ token }); 
-} else { 
-    res.sendStatus(401); } }
+
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Error de autenticación:', error.code);
+
+        res.status(401).json({
+            message: 'Credenciales inválidas'
+        });
+    }
+}
