@@ -30,8 +30,11 @@ async function loadFilm() {
         const film = await response.json();
 
         filmContainer.innerHTML = `
-    <article class="film-detail">
-        <div class="film-detail__poster">
+    <article class="film-detail" id="filmDetail">
+        <div
+            class="film-detail__poster"
+            id="posterContainer"
+            >
             <img
                 src="${film.image}"
                 alt="Afiche de ${film.title}"
@@ -85,17 +88,41 @@ async function loadFilm() {
                     ← Volver a la cartelera
                 </a>
             </div>
+           
         </div>
     </article>
 `;
 
 const playButton = document.getElementById('playButton');
+const posterContainer = document.getElementById('posterContainer');
+const filmDetail = document.getElementById('filmDetail');
+
+
 const videoUrl = film.videoUrl || film.video;
 
-if (playButton && videoUrl) {
+if (playButton && posterContainer && videoUrl) {
+
     playButton.addEventListener('click', () => {
-        window.location.href = videoUrl;
+        filmDetail.classList.add('film-detail--playing');
+        posterContainer.innerHTML = `
+            <video
+                controls
+                autoplay
+                style="
+                    width:100%;
+                    height:auto;
+                    border-radius:10px;
+                    background:#000;
+                "
+            >
+                <source src="${videoUrl}" type="video/mp4">
+            </video>
+        `;
+
+        playButton.textContent = "▶ Reproduciendo";
+        playButton.disabled = true;
     });
+
 }
 
         document.title = `${film.title} | API REST Films`;

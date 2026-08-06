@@ -1,24 +1,80 @@
 # API REST Films
 
-API REST desarrollada con **Node.js** y **Express** para administrar un catálogo de películas. La aplicación utiliza **Firebase Firestore** como base de datos NoSQL y **JWT (JSON Web Token)** para proteger las rutas que requieren autenticación.
+Aplicación web Full Stack desarrollada con **Node.js**, **Express** y **Firebase**, que permite autenticarse, consultar un catálogo de películas y reproducir videos desde una interfaz web.
 
-Este proyecto fue desarrollado como práctica de arquitectura por capas y servicios REST, aplicando una estructura escalable basada en rutas, controladores, servicios, modelos y middlewares.
+El backend implementa una arquitectura por capas (Routes → Controllers → Services → Models) y utiliza **Firebase Authentication**, **JWT** y **Firebase Admin SDK** para proteger el acceso a los datos almacenados en **Cloud Firestore**.
 
----
-
-## Tecnologías utilizadas
-
-* Node.js
-* Express
-* Firebase Firestore
-* JSON Web Token (JWT)
-* body-parser
-* dotenv
-* CORS
+El frontend está desarrollado con **HTML**, **CSS** y **JavaScript** puro, consumiendo la API mediante `fetch()`.
 
 ---
 
-## Arquitectura del proyecto
+# Tecnologías utilizadas
+
+## Backend
+
+- Node.js
+- Express
+- Firebase Authentication
+- Firebase Admin SDK
+- Cloud Firestore
+- JSON Web Token (JWT)
+- dotenv
+- CORS
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript (ES6)
+
+---
+
+# Funcionalidades
+
+- Login mediante Firebase Authentication.
+- Generación de JWT propios del servidor.
+- Protección de rutas mediante middleware.
+- Catálogo dinámico obtenido desde Firestore.
+- Página individual para cada película.
+- Reproducción integrada de video.
+- Gestión centralizada de autenticación desde el frontend.
+- Despliegue en Vercel.
+
+---
+
+# Arquitectura
+
+```
+Usuario
+    │
+    ▼
+Frontend (HTML / CSS / JavaScript)
+    │
+    ▼
+Express API
+    │
+    ▼
+Middleware JWT
+    │
+    ▼
+Controllers
+    │
+    ▼
+Services
+    │
+    ▼
+Models
+    │
+    ▼
+Firebase Admin SDK
+    │
+    ▼
+Cloud Firestore
+```
+
+---
+
+# Estructura del proyecto
 
 ```
 api-rest-films/
@@ -28,6 +84,14 @@ api-rest-films/
 ├── middlewares/
 ├── models/
 ├── public/
+│   ├── css/
+│   ├── imagenes/
+│   ├── js/
+│   ├── videos/
+│   ├── film.html
+│   ├── index.html
+│   └── login.html
+│
 ├── routes/
 ├── services/
 ├── utils/
@@ -38,7 +102,7 @@ api-rest-films/
 
 ---
 
-## Instalación
+# Instalación
 
 Clonar el repositorio:
 
@@ -46,25 +110,29 @@ Clonar el repositorio:
 git clone <URL_DEL_REPOSITORIO>
 ```
 
-Instalar las dependencias:
+Instalar dependencias:
 
 ```bash
 npm install
 ```
 
-Crear un archivo `.env` con las variables de entorno correspondientes.
+Crear un archivo `.env`.
 
-Iniciar el servidor:
+Ejecutar:
 
 ```bash
 npm run start
 ```
 
+Servidor:
+
+```
+http://localhost:3000
+```
+
 ---
 
-## Variables de entorno
-
-El proyecto requiere un archivo `.env` con, al menos, las siguientes variables:
+# Variables de entorno
 
 ```
 FIREBASE_API_KEY=
@@ -74,106 +142,90 @@ FIREBASE_STORAGE_BUCKET=
 FIREBASE_MESSAGING_SENDER_ID=
 FIREBASE_APP_ID=
 
+FIREBASE_ADMIN_PROJECT_ID=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_ADMIN_PRIVATE_KEY=
+
 JWT_SECRET_KEY=
 ```
 
 ---
 
-## Endpoints principales
+# Endpoints principales
 
-### Autenticación
+## Autenticación
 
-**POST** `/auth/login`
+### POST `/auth/login`
 
-Recibe un usuario y contraseña válidos y devuelve un token JWT.
-
-Ejemplo:
-
-```json
-{
-  "email": "user@email.com",
-  "password": "strongPass123"
-}
-```
+Devuelve un JWT válido para acceder a la API.
 
 ---
 
-### Películas
+## Películas
 
-**GET** `/api/films`
+### GET `/api/films`
 
-Obtiene el listado completo de películas.
+Obtiene el catálogo completo.
+
+### GET `/api/films/:id`
+
+Obtiene una película.
+
+### POST `/api/films`
+
+Crea una nueva película.
 
 ---
 
-**GET** `/api/films/:id`
+# Modelo de datos
 
-Obtiene una película por su identificador.
-
----
-
-**POST** `/api/films`
-
-Crea una nueva película en Firestore.
-
-Ejemplo:
+Cada documento de la colección **films** contiene información como:
 
 ```json
 {
   "title": "Citizen Kane",
   "year": 1941,
   "director": "Orson Welles",
+  "genre": "Drama",
+  "duration": 119,
+  "country": "Estados Unidos",
+  "rating": 8.3,
+  "synopsis": "...",
   "image": "/imagenes/citizen-kane.jpg",
-  "video": "/videos/citizen-kane.mp4"
+  "videoUrl": "/videos/citizen-kane.mp4"
 }
 ```
 
 ---
 
-## Seguridad
+# Seguridad
 
-Las rutas de la API están protegidas mediante **JWT**.
-
-Para acceder a los recursos protegidos debe enviarse el encabezado:
-
-```
-Authorization: Bearer <TOKEN_JWT>
-```
+- Firebase Authentication para validar usuarios.
+- JWT firmado por el servidor.
+- Middleware para proteger la API.
+- Firestore accedido exclusivamente mediante Firebase Admin SDK.
+- Credenciales almacenadas mediante variables de entorno.
 
 ---
 
-## Base de datos
+# Estado actual
 
-Los datos se almacenan en **Firebase Firestore**, utilizando una colección denominada **films**.
+Actualmente la aplicación permite:
 
-Cada documento representa una película e incluye información como:
-
-* Título
-* Año
-* Director
-* Imagen
-* Video
-
----
-
-## Estado actual del proyecto
-
-Actualmente la API permite:
-
-* Autenticación mediante JWT.
-* Consulta de películas almacenadas en Firestore.
-* Alta de nuevas películas.
-* Protección de rutas mediante middleware.
-* Consumo y pruebas mediante Postman.
+- Login de usuarios.
+- Autenticación con Firebase.
+- Generación de JWT.
+- Catálogo dinámico.
+- Consulta individual de películas.
+- Reproducción integrada de video.
+- Despliegue en Vercel.
 
 ---
 
-## Evolución prevista
+# Próximas mejoras
 
-Como continuación del proyecto se prevé incorporar:
-
-* Frontend dinámico consumiendo la API mediante `fetch()`.
-* Gestión de usuarios desde Firestore.
-* Reproducción de películas desde una interfaz web.
-* Administración completa (CRUD).
-* Despliegue en Vercel.
+- Panel de administración.
+- Edición y eliminación de películas.
+- Gestión de roles de usuario.
+- Firebase Storage para videos.
+- Mejoras visuales del reproductor.
