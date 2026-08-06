@@ -30,43 +30,73 @@ async function loadFilm() {
         const film = await response.json();
 
         filmContainer.innerHTML = `
+    <article class="film-detail">
+        <div class="film-detail__poster">
             <img
                 src="${film.image}"
-                alt="${film.title}"
-                style="width:100%;max-height:520px;object-fit:contain;background:#050505;border-radius:8px;"
+                alt="Afiche de ${film.title}"
             >
+        </div>
 
-            <h1>${film.title}</h1>
+        <div class="film-detail__content">
+            <p class="film-detail__eyebrow">Ficha de la película</p>
 
-            <p><strong>Director:</strong> ${film.director}</p>
+            <h1 class="film-detail__title">${film.title}</h1>
 
-            <p><strong>Año:</strong> ${film.year}</p>
+            <div class="film-detail__metadata">
+                <span>${film.year ?? 'Año no informado'}</span>
+                <span>${film.duration ? `${film.duration} min` : 'Duración no informada'}</span>
+                <span>${film.genre || 'Género no informado'}</span>
+            </div>
 
-            <p><strong>Género:</strong> ${film.genre || '-'}</p>
+            <dl class="film-detail__data">
+                <div>
+                    <dt>Director</dt>
+                    <dd>${film.director || '-'}</dd>
+                </div>
 
-            <p>
-                <strong>Duración:</strong>
-                ${film.duration ? `${film.duration} min` : '-'}
-            </p>
+                <div>
+                    <dt>País</dt>
+                    <dd>${film.country || '-'}</dd>
+                </div>
 
-            <p><strong>País:</strong> ${film.country || '-'}</p>
+                <div>
+                    <dt>Puntuación</dt>
+                    <dd>${film.rating ?? '-'}</dd>
+                </div>
+            </dl>
 
-            <p><strong>Puntuación:</strong> ${film.rating ?? '-'}</p>
+            <section class="film-detail__synopsis">
+                <h2>Sinopsis</h2>
+                <p>${film.synopsis || 'Sin información disponible.'}</p>
+            </section>
 
-            <h3>Sinopsis</h3>
+            <div class="film-detail__actions">
+                <button
+                    id="playButton"
+                    class="film-detail__play"
+                    type="button"
+                    ${film.videoUrl || film.video ? '' : 'disabled'}
+                >
+                    ▶ Reproducir
+                </button>
 
-            <p>${film.synopsis || 'Sin información.'}</p>
+                <a class="film-detail__back" href="/">
+                    ← Volver a la cartelera
+                </a>
+            </div>
+        </div>
+    </article>
+`;
 
-            <hr>
+const playButton = document.getElementById('playButton');
+const videoUrl = film.videoUrl || film.video;
 
-            <button id="playButton" type="button">
-                ▶ Reproducir
-            </button>
-
-            <br><br>
-
-            <a href="/">← Volver a la cartelera</a>
-        `;
+if (playButton && videoUrl) {
+    playButton.addEventListener('click', () => {
+        window.location.href = videoUrl;
+    });
+}
 
         document.title = `${film.title} | API REST Films`;
 
