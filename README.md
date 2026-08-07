@@ -1,16 +1,51 @@
 # API REST Films
 
-Aplicación web Full Stack desarrollada con **Node.js**, **Express** y **Firebase**, que permite autenticarse, consultar un catálogo de películas y reproducir videos desde una interfaz web.
+Aplicación web desarrollada con **Node.js**, **Express** y **Firebase**, que permite registrar usuarios, autenticarse mediante JWT y acceder a un catálogo de películas almacenado en Cloud Firestore.
 
-El backend implementa una arquitectura por capas (Routes → Controllers → Services → Models) y utiliza **Firebase Authentication**, **JWT** y **Firebase Admin SDK** para proteger el acceso a los datos almacenados en **Cloud Firestore**.
+La aplicación implementa una arquitectura por capas (**Routes → Controllers → Services → Models**), autenticación mediante **Firebase Authentication**, autorización por roles (`viewer` y `admin`) y un frontend que consume la API utilizando `fetch()`.
 
-El frontend está desarrollado con **HTML**, **CSS** y **JavaScript** puro, consumiendo la API mediante `fetch()`.
+---
+## Demo
+
+**Aplicación online:** https://api-rest-films-seven.vercel.app/
 
 ---
 
-# Tecnologías utilizadas
+## Características principales
 
-## Backend
+- Arquitectura por capas.
+- Firebase Authentication + Cloud Firestore.
+- Autenticación mediante JWT.
+- Roles de usuario (`viewer` / `admin`).
+- Catálogo dinámico de películas.
+- Reproductor integrado.
+- Despliegue en Vercel.
+
+---
+
+## Capturas de pantalla
+
+### Inicio de sesión
+
+![Login](assets/screenshots/01-login.png)
+
+### Registro
+
+![Registro](assets/screenshots/02-register.png)
+
+### Cartelera
+
+![Cartelera](assets/screenshots/03-gallery.png)
+
+### Ficha de película
+
+![Película](assets/screenshots/04-film.png)
+
+---
+
+## Tecnologías utilizadas
+
+### Backend
 
 - Node.js
 - Express
@@ -21,30 +56,48 @@ El frontend está desarrollado con **HTML**, **CSS** y **JavaScript** puro, cons
 - dotenv
 - CORS
 
-## Frontend
+### Frontend
 
 - HTML5
 - CSS3
 - JavaScript (ES6)
 
+### Deploy
+
+- Vercel
+
 ---
 
-# Funcionalidades
+## Funcionalidades
 
+- Registro de usuarios.
 - Login mediante Firebase Authentication.
-- Generación de JWT propios del servidor.
+- Generación de JWT firmados por el servidor.
 - Protección de rutas mediante middleware.
 - Catálogo dinámico obtenido desde Firestore.
 - Página individual para cada película.
 - Reproducción integrada de video.
-- Gestión centralizada de autenticación desde el frontend.
-- Despliegue en Vercel.
+- Gestión centralizada de autenticación mediante JWT.
 
 ---
 
-# Arquitectura
+## Flujo de uso
 
-```
+1. El usuario crea una cuenta.
+2. Se registra en Firebase Authentication.
+3. Se crea automáticamente su perfil en Firestore.
+4. Inicia sesión.
+5. El servidor genera un JWT.
+6. El frontend consume la API autenticada.
+7. El usuario accede al catálogo.
+
+Los usuarios con rol **admin** disponen de permisos para administrar las películas.
+
+---
+
+## Arquitectura
+
+```text
 Usuario
     │
     ▼
@@ -74,9 +127,9 @@ Cloud Firestore
 
 ---
 
-# Estructura del proyecto
+## Estructura del proyecto
 
-```
+```text
 api-rest-films/
 │
 ├── controllers/
@@ -90,11 +143,14 @@ api-rest-films/
 │   ├── videos/
 │   ├── film.html
 │   ├── index.html
-│   └── login.html
+│   ├── login.html
+│   └── register.html
 │
 ├── routes/
 ├── services/
 ├── utils/
+├── assets/
+│   └── screenshots/
 ├── index.js
 ├── package.json
 └── .env
@@ -102,7 +158,7 @@ api-rest-films/
 
 ---
 
-# Instalación
+## Instalación
 
 Clonar el repositorio:
 
@@ -116,7 +172,7 @@ Instalar dependencias:
 npm install
 ```
 
-Crear un archivo `.env`.
+Crear un archivo `.env` con las variables correspondientes.
 
 Ejecutar:
 
@@ -126,15 +182,15 @@ npm run start
 
 Servidor:
 
-```
+```text
 http://localhost:3000
 ```
 
 ---
 
-# Variables de entorno
+## Variables de entorno
 
-```
+```text
 FIREBASE_API_KEY=
 FIREBASE_AUTH_DOMAIN=
 FIREBASE_PROJECT_ID=
@@ -151,35 +207,77 @@ JWT_SECRET_KEY=
 
 ---
 
-# Endpoints principales
+## Endpoints principales
 
-## Autenticación
+### Registro
 
-### POST `/auth/login`
+**POST** `/auth/register`
+
+Crea un nuevo usuario con rol **viewer**.
+
+---
+
+### Autenticación
+
+**POST** `/auth/login`
 
 Devuelve un JWT válido para acceder a la API.
 
 ---
 
-## Películas
+### Películas
 
-### GET `/api/films`
+**GET** `/api/films`
 
 Obtiene el catálogo completo.
 
-### GET `/api/films/:id`
+**GET** `/api/films/:id`
 
-Obtiene una película.
+Obtiene una película por su identificador.
 
-### POST `/api/films`
+**GET** `/api/films/buscar`
+
+Busca películas utilizando parámetros de consulta (`title`, `director`, `year`).
+
+**POST** `/api/films`
 
 Crea una nueva película.
 
+**PUT** `/api/films/:id`
+
+Actualiza una película existente.
+
+**DELETE** `/api/films/:id`
+
+Elimina una película.
+
+> Las operaciones **POST**, **PUT** y **DELETE** requieren un usuario con rol **admin**.
+
 ---
 
-# Modelo de datos
+## Modelo de datos
 
-Cada documento de la colección **films** contiene información como:
+### Colección `films`
+
+- title
+- director
+- year
+- genre
+- duration
+- country
+- rating
+- synopsis
+- image
+- videoUrl
+
+### Colección `users`
+
+- email
+- name
+- role
+- active
+
+Ejemplo de documento:
 
 ```json
 {
@@ -198,34 +296,57 @@ Cada documento de la colección **films** contiene información como:
 
 ---
 
-# Seguridad
+## Seguridad
 
 - Firebase Authentication para validar usuarios.
 - JWT firmado por el servidor.
-- Middleware para proteger la API.
+- Middleware de autenticación.
+- Middleware `requireAdmin`.
 - Firestore accedido exclusivamente mediante Firebase Admin SDK.
-- Credenciales almacenadas mediante variables de entorno.
+- Variables de entorno para proteger credenciales.
 
 ---
 
-# Estado actual
+## Estado actual
 
-Actualmente la aplicación permite:
+### Funcionalidades implementadas
 
-- Login de usuarios.
-- Autenticación con Firebase.
-- Generación de JWT.
-- Catálogo dinámico.
-- Consulta individual de películas.
-- Reproducción integrada de video.
-- Despliegue en Vercel.
+#### Usuarios
+
+- Registro.
+- Inicio de sesión.
+- Autenticación mediante Firebase Authentication.
+- Roles (`viewer` / `admin`).
+
+#### Películas
+
+- Consulta del catálogo.
+- Consulta individual.
+- Búsqueda.
+- Alta.
+- Modificación.
+- Eliminación.
+
+#### Frontend
+
+- Login.
+- Registro.
+- Cartelera dinámica.
+- Ficha individual.
+- Reproductor integrado.
+
+#### Despliegue
+
+- Aplicación desplegada en Vercel.
+- Base de datos alojada en Cloud Firestore.
 
 ---
 
-# Próximas mejoras
+## Próximas mejoras
 
-- Panel de administración.
-- Edición y eliminación de películas.
-- Gestión de roles de usuario.
-- Firebase Storage para videos.
-- Mejoras visuales del reproductor.
+- Panel de administración (`admin.html`).
+- CRUD completo desde la interfaz web.
+- Gestión de imágenes de las películas.
+- Integración con almacenamiento externo para videos.
+- Recuperación de contraseña.
+- Verificación de correo electrónico.
