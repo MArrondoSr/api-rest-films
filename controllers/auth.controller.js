@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'firebase/auth';
 
 import { auth } from '../data/data.js';
 import { generateToken } from '../utils/token-generator.js';
@@ -21,6 +21,11 @@ export async function login(req, res) {
         );
 
         const firebaseUser = userCredential.user;
+            if (!firebaseUser.emailVerified) {
+            return res.status(403).json({
+                message: 'Debés verificar tu correo electrónico antes de iniciar sesión'
+            });
+        }
         const userDoc = await adminDb
             .collection('users')
             .doc(firebaseUser.uid)
@@ -82,6 +87,8 @@ export async function register(req, res) {
 
         const firebaseUser = userCredential.user;
 
+        await sendEmailVerification(firebaseUser);
+
         await adminDb
             .collection('users')
             .doc(firebaseUser.uid)
@@ -113,6 +120,83 @@ export async function register(req, res) {
 
         return res.status(500).json({
             message: 'Error al registrar el usuario'
+        });
+    }
+}
+
+export async function forgotPassword(req, res) {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                message: 'El email es obligatorio'
+            });
+        }
+
+        await sendPasswordResetEmail(auth, email);
+
+        return res.status(200).json({
+            message: 'Se envió un correo para restablecer la contraseña'
+        });
+
+    } catch (error) {
+        console.error(
+            'Error en recuperación de contraseña:',
+            error.code,
+            error.message
+        );
+
+        /*
+         * No revelamos demasiado sobre la existencia
+         * de una cuenta determinada.
+         */
+        return res.status(200).json({
+            message:
+                'Si el correo corresponde a una cuenta válida, recibirás instrucciones para restablecer la contraseña'
+        });
+    }
+}
+
+export async function resendVerification(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                message: 'Email y contraseña son obligatorios'
+            });
+        }
+
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        const firebaseUser = userCredential.user;
+
+        if (firebaseUser.emailVerified) {
+            return res.status(400).json({
+                message: 'El correo ya está verificado'
+            });
+        }
+
+        await sendEmailVerification(firebaseUser);
+
+        return res.status(200).json({
+            message: 'Correo de verificación reenviado'
+        });
+
+    } catch (error) {
+        console.error(
+            'Error al reenviar verificación:',
+            error.code,
+            error.message
+        );
+
+        return res.status(400).json({
+            message: 'No se pudo reenviar el correo de verificación'
         });
     }
 }

@@ -108,6 +108,18 @@ async function fetchWithAuth(url, options = {}) {
         throw new Error('La sesión venció o no es válida');
     }
 
+    if (response.status === 403) {
+    const data = await response.clone().json().catch(() => null);
+
+    if (data?.message === 'Usuario inactivo') {
+        removeToken();
+
+        window.location.href = '/login.html';
+
+        throw new Error('La cuenta está desactivada');
+    }
+    }
+
     return response;
 }
 
@@ -122,3 +134,5 @@ window.Auth = {
     requireAdmin,
     fetchWithAuth
 };
+
+response.clone()

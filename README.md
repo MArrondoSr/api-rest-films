@@ -13,12 +13,17 @@ La aplicación implementa una arquitectura por capas (**Routes → Controllers �
 
 ## Características principales
 
-- Arquitectura por capas.
+- Arquitectura por capas (Routes → Controllers → Services → Models).
 - Firebase Authentication + Cloud Firestore.
 - Autenticación mediante JWT.
 - Roles de usuario (`viewer` / `admin`).
+- Registro y verificación de correo electrónico.
+- Recuperación de contraseña.
+- Activación y desactivación de usuarios.
 - Catálogo dinámico de películas.
 - Reproductor integrado.
+- Panel de administración.
+- CRUD completo de películas desde la interfaz web.
 - Despliegue en Vercel.
 
 ---
@@ -40,6 +45,8 @@ La aplicación implementa una arquitectura por capas (**Routes → Controllers �
 ### Ficha de película
 
 ![Película](assets/screenshots/04-film.png)
+
+![Panel de administración](assets/screenshots/05-admin.png)
 
 ---
 
@@ -70,28 +77,52 @@ La aplicación implementa una arquitectura por capas (**Routes → Controllers �
 
 ## Funcionalidades
 
-- Registro de usuarios.
-- Login mediante Firebase Authentication.
+### Usuarios
+
+- Registro de nuevos usuarios con rol `viewer`.
+- Inicio de sesión mediante Firebase Authentication.
+- Verificación obligatoria del correo electrónico.
+- Reenvío del correo de verificación.
+- Recuperación de contraseña mediante email.
+- Activación y desactivación de cuentas.
+- Cierre automático de sesión para usuarios desactivados.
 - Generación de JWT firmados por el servidor.
-- Protección de rutas mediante middleware.
+- Roles `viewer` y `admin`.
+
+### Catálogo
+
 - Catálogo dinámico obtenido desde Firestore.
 - Página individual para cada película.
 - Reproducción integrada de video.
-- Gestión centralizada de autenticación mediante JWT.
+- Búsqueda de películas.
+
+### Administración
+
+- Panel exclusivo para usuarios con rol `admin`.
+- Listado dinámico de películas.
+- Búsqueda por título, director o año.
+- Alta de películas.
+- Edición de películas.
+- Eliminación con confirmación.
+- Actualización automática del listado.
 
 ---
 
 ## Flujo de uso
 
 1. El usuario crea una cuenta.
-2. Se registra en Firebase Authentication.
-3. Se crea automáticamente su perfil en Firestore.
-4. Inicia sesión.
-5. El servidor genera un JWT.
-6. El frontend consume la API autenticada.
-7. El usuario accede al catálogo.
+2. Firebase Authentication registra sus credenciales.
+3. Se crea automáticamente su perfil en Firestore con rol `viewer`.
+4. Firebase envía un correo de verificación.
+5. El usuario verifica su dirección de correo electrónico.
+6. Inicia sesión.
+7. El servidor valida el usuario y genera un JWT.
+8. El frontend utiliza el JWT para consumir la API.
+9. El usuario accede al catálogo y a las películas.
 
-Los usuarios con rol **admin** disponen de permisos para administrar las películas.
+Los usuarios con rol **admin** disponen además de acceso al panel de administración y pueden crear, modificar y eliminar películas.
+
+Las cuentas marcadas como `active: false` no pueden iniciar sesión y pierden el acceso en su siguiente petición aunque dispongan de un JWT todavía vigente.
 
 ---
 
@@ -138,13 +169,19 @@ api-rest-films/
 ├── models/
 ├── public/
 │   ├── css/
+    │   ├── admin.css
+    │   ├── estilos.css
+    │   └── login.css
 │   ├── imagenes/
 │   ├── js/
 │   ├── videos/
-│   ├── film.html
-│   ├── index.html
-│   ├── login.html
-│   └── register.html
+    ├
+│   ├── admin.html
+    ├── film.html
+    ├── forgot-password.html
+    ├── index.html
+    ├── login.html
+    └── register.html
 │
 ├── routes/
 ├── services/
@@ -209,19 +246,23 @@ JWT_SECRET_KEY=
 
 ## Endpoints principales
 
-### Registro
+### Autenticación y usuarios
 
 **POST** `/auth/register`
 
-Crea un nuevo usuario con rol **viewer**.
-
----
-
-### Autenticación
+Registra un nuevo usuario con rol `viewer` y envía un correo de verificación.
 
 **POST** `/auth/login`
 
-Devuelve un JWT válido para acceder a la API.
+Autentica al usuario y devuelve un JWT válido para acceder a la API.
+
+**POST** `/auth/forgot-password`
+
+Envía un correo electrónico para restablecer la contraseña.
+
+**POST** `/auth/resend-verification`
+
+Reenvía el correo de verificación de la cuenta.
 
 ---
 
@@ -229,7 +270,7 @@ Devuelve un JWT válido para acceder a la API.
 
 **GET** `/api/films`
 
-Obtiene el catálogo completo.
+Obtiene el catálogo completo de películas.
 
 **GET** `/api/films/:id`
 
@@ -237,7 +278,7 @@ Obtiene una película por su identificador.
 
 **GET** `/api/films/buscar`
 
-Busca películas utilizando parámetros de consulta (`title`, `director`, `year`).
+Busca películas mediante parámetros de consulta (`title`, `director`, `year`).
 
 **POST** `/api/films`
 
@@ -251,33 +292,30 @@ Actualiza una película existente.
 
 Elimina una película.
 
-> Las operaciones **POST**, **PUT** y **DELETE** requieren un usuario con rol **admin**.
+> Las operaciones **POST**, **PUT** y **DELETE** requieren autenticación y un usuario con rol `admin`.
 
 ---
 
 ## Modelo de datos
 
+La aplicación utiliza dos colecciones principales en Cloud Firestore.
+
 ### Colección `films`
 
-- title
-- director
-- year
-- genre
-- duration
-- country
-- rating
-- synopsis
-- image
-- videoUrl
+Cada documento representa una película y puede contener los siguientes campos:
 
-### Colección `users`
+- `title`
+- `director`
+- `year`
+- `genre`
+- `duration`
+- `country`
+- `rating`
+- `synopsis`
+- `image`
+- `videoUrl`
 
-- email
-- name
-- role
-- active
-
-Ejemplo de documento:
+Ejemplo:
 
 ```json
 {
@@ -294,59 +332,52 @@ Ejemplo de documento:
 }
 ```
 
+### Colección `users`
+
+Cada documento contiene el perfil asociado a un usuario registrado:
+
+- `email`
+- `name`
+- `role`
+- `active`
+
+El campo `role` determina los permisos del usuario (`viewer` o `admin`) y `active` permite habilitar o deshabilitar su acceso a la aplicación.
+
 ---
 
 ## Seguridad
 
-- Firebase Authentication para validar usuarios.
+- Firebase Authentication para validar las credenciales.
+- Verificación obligatoria del correo electrónico.
 - JWT firmado por el servidor.
-- Middleware de autenticación.
-- Middleware `requireAdmin`.
-- Firestore accedido exclusivamente mediante Firebase Admin SDK.
-- Variables de entorno para proteger credenciales.
+- Middleware de autenticación para proteger la API.
+- Middleware `requireAdmin` para las operaciones administrativas.
+- Autorización basada en roles (`viewer` / `admin`).
+- Verificación del estado `active` del usuario en las solicitudes autenticadas.
+- Bloqueo de inicio de sesión para cuentas inactivas.
+- Firestore accedido desde el backend mediante Firebase Admin SDK.
+- Credenciales y secretos almacenados mediante variables de entorno.
 
 ---
 
 ## Estado actual
 
-### Funcionalidades implementadas
+El proyecto se encuentra desplegado y funcional en Vercel, utilizando Cloud Firestore como base de datos.
 
-#### Usuarios
+Actualmente permite completar el flujo de registro, verificación de correo, autenticación y recuperación de contraseña de los usuarios. Las cuentas pueden tener roles `viewer` o `admin` y pueden ser desactivadas mediante su estado `active`.
 
-- Registro.
-- Inicio de sesión.
-- Autenticación mediante Firebase Authentication.
-- Roles (`viewer` / `admin`).
+Los usuarios autenticados pueden consultar el catálogo, acceder a la ficha individual de cada película y utilizar el reproductor integrado.
 
-#### Películas
+Los administradores disponen además de un panel protegido desde el cual pueden buscar, crear, editar y eliminar películas. Los cambios realizados desde este panel se reflejan directamente en Firestore.
 
-- Consulta del catálogo.
-- Consulta individual.
-- Búsqueda.
-- Alta.
-- Modificación.
-- Eliminación.
-
-#### Frontend
-
-- Login.
-- Registro.
-- Cartelera dinámica.
-- Ficha individual.
-- Reproductor integrado.
-
-#### Despliegue
-
-- Aplicación desplegada en Vercel.
-- Base de datos alojada en Cloud Firestore.
+El funcionamiento de ambos roles y las operaciones CRUD del panel de administración han sido probado también sobre la aplicación desplegada en Vercel.
 
 ---
 
 ## Próximas mejoras
 
-- Panel de administración (`admin.html`).
-- CRUD completo desde la interfaz web.
-- Gestión de imágenes de las películas.
+- Gestión de usuarios desde el panel de administración.
+- Gestión y subida de imágenes.
 - Integración con almacenamiento externo para videos.
-- Recuperación de contraseña.
-- Verificación de correo electrónico.
+- Mejoras en la experiencia del reproductor.
+- Personalización de los correos de autenticación.
