@@ -12,7 +12,11 @@ export const createFilmService = async (filmData) => {
     return await filmsModel.saveFilm(filmData);
 };
 
-export const deleteFilmsService = async (id) => {
+export const updateFilmService = async (id, filmData) => {
+    return await filmsModel.updateFilm(id, filmData);
+};
+
+export const deleteFilmService = async (id) => {
     return await filmsModel.deleteFilm(id);
 };
 

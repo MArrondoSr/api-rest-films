@@ -54,17 +54,17 @@ body {
     line-height: 1.5;
 }
 
-#login-form {
+.auth-form {
     display: grid;
     gap: 0.75rem;
 }
 
-#login-form label {
+.auth-form label {
     font-size: 0.95rem;
     font-weight: 700;
 }
 
-#login-form input {
+.auth-form input {
     width: 100%;
     padding: 0.85rem 0.9rem;
     color: #222;
@@ -74,13 +74,13 @@ body {
     font: inherit;
 }
 
-#login-form input:focus {
+.auth-form input:focus {
     outline: none;
     border-color: #d59a31;
     box-shadow: 0 0 0 3px rgba(213, 154, 49, 0.2);
 }
 
-#login-form button {
+.auth-form button {
     margin-top: 0.7rem;
     padding: 0.9rem;
     color: #2c1307;
@@ -92,11 +92,11 @@ body {
     cursor: pointer;
 }
 
-#login-form button:hover {
+.auth-form button:hover {
     filter: brightness(1.08);
 }
 
-#login-form button:disabled {
+.auth-form button:disabled {
     cursor: wait;
     opacity: 0.7;
 }

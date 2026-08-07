@@ -56,3 +56,21 @@ export async function deleteFilm(id) {
 
     return true;
 }
+
+export async function updateFilm(id, filmData) {
+    const filmRef = filmsCollection.doc(id);
+    const filmDoc = await filmRef.get();
+
+    if (!filmDoc.exists) {
+        return null;
+    }
+
+    await filmRef.update(filmData);
+
+    const updatedDoc = await filmRef.get();
+
+    return {
+        id: updatedDoc.id,
+        ...updatedDoc.data()
+    };
+}

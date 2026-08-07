@@ -99,30 +99,69 @@ const filmDetail = document.getElementById('filmDetail');
 
 
 const videoUrl = film.videoUrl || film.video;
+const originalPosterHtml = posterContainer?.innerHTML || '';
+let savedVideoTime = 0;
 
-if (playButton && posterContainer && videoUrl) {
-
+if (playButton && posterContainer && filmDetail && videoUrl) {
     playButton.addEventListener('click', () => {
         filmDetail.classList.add('film-detail--playing');
+
         posterContainer.innerHTML = `
-            <video
-                controls
-                autoplay
-                style="
-                    width:100%;
-                    height:auto;
-                    border-radius:10px;
-                    background:#000;
-                "
-            >
-                <source src="${videoUrl}" type="video/mp4">
-            </video>
+            <div class="film-player">
+                <video
+                    id="filmPlayer"
+                    class="film-detail__player"
+                    controls
+                    autoplay
+                >
+                    <source src="${videoUrl}" type="video/mp4">
+                    Tu navegador no puede reproducir este video.
+                </video>
+
+                <button
+                    id="closePlayerButton"
+                    class="film-player__close"
+                    type="button"
+                >
+                    ← Volver
+                </button>
+            </div>
         `;
 
-        playButton.textContent = "▶ Reproduciendo";
-        playButton.disabled = true;
-    });
+        const video = document.getElementById('filmPlayer');
+        const closePlayerButton =
+            document.getElementById('closePlayerButton');
 
+        if (video && savedVideoTime > 0) {
+            video.addEventListener(
+                'loadedmetadata',
+                () => {
+                    video.currentTime = savedVideoTime;
+                },
+                { once: true }
+            );
+        }
+
+        closePlayerButton?.addEventListener('click', () => {
+            if (video) {
+                savedVideoTime = video.currentTime;
+                video.pause();
+            }
+
+            posterContainer.innerHTML = originalPosterHtml;
+            filmDetail.classList.remove('film-detail--playing');
+
+            playButton.textContent =
+                savedVideoTime > 0
+                    ? '▶ Continuar'
+                    : '▶ Reproducir';
+
+            playButton.disabled = false;
+        });
+
+        playButton.disabled = true;
+        playButton.textContent = 'Reproduciendo';
+    });
 }
 
         document.title = `${film.title} | API REST Films`;

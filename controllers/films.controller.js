@@ -2,8 +2,9 @@ import {
     getAllFilmsService,
     getFilmByIdService,
     createFilmService,
+    updateFilmService,
     searchFilmsService,
-    deleteFilmsService
+    deleteFilmService
 } from '../services/films.service.js';
 
 export const getAllFilms = async (req, res) => {
@@ -51,6 +52,35 @@ export const createFilm = async (req, res) => {
     }
 };
 
+export const updateFilm = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const filmData = req.body;
+
+        if (!filmData || Object.keys(filmData).length === 0) {
+            return res.status(400).json({
+                message: 'Debe enviar al menos un campo para actualizar'
+            });
+        }
+
+        const updatedFilm = await updateFilmService(id, filmData);
+
+        if (!updatedFilm) {
+            return res.status(404).json({
+                message: 'Película no encontrada'
+            });
+        }
+
+        res.status(200).json(updatedFilm);
+    } catch (error) {
+        console.error('Error al actualizar la película:', error);
+
+        res.status(500).json({
+            message: 'Error al actualizar la película'
+        });
+    }
+};
+
 export const searchFilms = async (req, res) => {
     try {
         const result = await searchFilmsService(req.query);
@@ -67,7 +97,7 @@ export const deleteFilm = async (req, res) => {
     try {
         const id = req.params.id;
 
-        await deleteFilmsService(id);
+        await deleteFilmService(id);
 
         res.status(200).json({
             message: "Película eliminada correctamente"
