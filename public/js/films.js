@@ -1,5 +1,14 @@
 const gallery = document.getElementById('galeria');
+const adminAccess = document.getElementById('adminAccess');
+const currentUser = Auth.getCurrentUser();
 
+if (adminAccess && currentUser?.role === 'admin') {
+    adminAccess.innerHTML = `
+        <a href="/admin.html" class="admin-link">
+            Administración
+        </a>
+    `;
+}
 
 async function loadFilms() {
     try {

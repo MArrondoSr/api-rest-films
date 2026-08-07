@@ -22,7 +22,7 @@ export const authentication = (req, res, next) => {
 
     jwt.verify(token, secret_key, (err, decoded) => {
         if (err) {
-            return res.status(403).json({
+            return res.status(401).json({
                 message: 'Token inválido o vencido'
             });
         }

@@ -32,6 +32,59 @@ function requireAuthentication() {
     return token;
 }
 
+function decodeToken() {
+    const token = getToken();
+
+    if (!token) {
+        return null;
+    }
+
+    try {
+        const payload = token.split('.')[1];
+
+        const normalizedPayload = payload
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+
+        const decodedPayload = decodeURIComponent(
+            atob(normalizedPayload)
+                .split('')
+                .map(char =>
+                    '%' +
+                    ('00' + char.charCodeAt(0).toString(16)).slice(-2)
+                )
+                .join('')
+        );
+
+        return JSON.parse(decodedPayload);
+
+    } catch (error) {
+        console.error('No se pudo decodificar el token:', error);
+        return null;
+    }
+}
+
+function getCurrentUser() {
+    return decodeToken();
+}
+
+function requireAdmin() {
+    const token = requireAuthentication();
+
+    if (!token) {
+        return null;
+    }
+
+    const user = getCurrentUser();
+
+    if (!user || user.role !== 'admin') {
+        window.location.href = '/';
+        return null;
+    }
+
+    return user;
+}
+
 async function fetchWithAuth(url, options = {}) {
     const token = requireAuthentication();
 
@@ -48,7 +101,7 @@ async function fetchWithAuth(url, options = {}) {
         headers
     });
 
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
         removeToken();
         window.location.href = '/login.html';
 
@@ -64,5 +117,8 @@ window.Auth = {
     removeToken,
     logout,
     requireAuthentication,
+    decodeToken,
+    getCurrentUser,
+    requireAdmin,
     fetchWithAuth
 };

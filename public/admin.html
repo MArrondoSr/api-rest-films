@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administración | API REST Films</title>
+
+    <link rel="stylesheet" href="./css/admin.css">
+</head>
+
+<body>
+
+    <main class="admin-page">
+
+        <header class="admin-header">
+            <div>
+                <p class="admin-header__eyebrow">
+                    Panel de administración
+                </p>
+
+                <h1>API REST FILMS</h1>
+
+                <p class="admin-header__description">
+                    Gestión del catálogo de películas.
+                </p>
+            </div>
+
+            <div class="admin-header__actions">
+                <a href="/" class="button button--secondary">
+                    Ver cartelera
+                </a>
+
+                <button id="logoutButton" class="button button--secondary" type="button">
+                    Cerrar sesión
+                </button>
+            </div>
+        </header>
+
+        <section class="admin-toolbar">
+
+    <div class="admin-search">
+
+        <label for="search">
+            Buscar película
+        </label>
+
+        <div class="admin-search__controls">
+
+            <select id="searchType">
+                <option value="title">Título</option>
+                <option value="director">Director</option>
+                <option value="year">Año</option>
+            </select>
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Ingresá el criterio de búsqueda"
+            >
+
+            <button
+                id="searchButton"
+                class="button button--secondary"
+                type="button"
+            >
+                Buscar
+            </button>
+
+            <button
+    id="clearSearchButton"
+    class="button button--secondary"
+    type="button"
+>
+    Limpiar
+</button>
+        </div>
+
+    </div>
+
+</section>
+
+        <section class="admin-content">
+
+            <div class="admin-list">
+
+                <div class="admin-list__header">
+                    <span>Película</span>
+                    <span>Año</span>
+                    <span>Director</span>
+                    <span>Acciones</span>
+                </div>
+
+
+              <div id="filmsList"></div>
+
+            </div>
+
+        </section>
+
+        <section class="admin-actions">
+
+    <button
+        id="newFilmButton"
+        class="button button--primary"
+        type="button"
+    >
+        + Nueva película
+    </button>
+
+</section>
+
+       <div
+    id="filmModal"
+    class="modal"
+    hidden
+>
+
+    <div
+        class="modal__backdrop"
+        id="modalBackdrop"
+    ></div>
+
+    <section
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="filmFormTitle"
+    >
+
+        <header class="modal__header">
+
+            <h2 id="filmFormTitle">
+                Nueva película
+            </h2>
+
+            <button
+                id="closeModalButton"
+                class="modal__close"
+                type="button"
+                aria-label="Cerrar"
+            >
+                ×
+            </button>
+
+        </header>
+
+        <form
+            id="filmForm"
+            class="admin-form"
+        >
+
+            <div class="admin-form__group">
+                <label for="title">Título</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                >
+            </div>
+
+            <div class="admin-form__group">
+                <label for="director">Director</label>
+                <input
+                    type="text"
+                    id="director"
+                    name="director"
+                    required
+                >
+            </div>
+
+            <div class="admin-form__row">
+
+                <div class="admin-form__group">
+                    <label for="year">Año</label>
+                    <input
+                        type="number"
+                        id="year"
+                        name="year"
+                    >
+                </div>
+
+                <div class="admin-form__group">
+                    <label for="duration">Duración</label>
+                    <input
+                        type="number"
+                        id="duration"
+                        name="duration"
+                        placeholder="minutos"
+                    >
+                </div>
+
+                <div class="admin-form__group">
+                    <label for="rating">Puntuación</label>
+                    <input
+                        type="number"
+                        id="rating"
+                        name="rating"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                    >
+                </div>
+
+            </div>
+
+            <div class="admin-form__row">
+
+                <div class="admin-form__group">
+                    <label for="genre">Género</label>
+                    <input
+                        type="text"
+                        id="genre"
+                        name="genre"
+                    >
+                </div>
+
+                <div class="admin-form__group">
+                    <label for="country">País</label>
+                    <input
+                        type="text"
+                        id="country"
+                        name="country"
+                    >
+                </div>
+
+            </div>
+
+            <div class="admin-form__group">
+                <label for="image">Ruta del afiche</label>
+                <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    placeholder="/imagenes/pelicula.jpg"
+                >
+            </div>
+
+            <div class="admin-form__group">
+                <label for="videoUrl">URL del video</label>
+                <input
+                    type="text"
+                    id="videoUrl"
+                    name="videoUrl"
+                    placeholder="/videos/pelicula.mp4"
+                >
+            </div>
+
+            <div class="admin-form__group">
+                <label for="synopsis">Sinopsis</label>
+
+                <textarea
+                    id="synopsis"
+                    name="synopsis"
+                    rows="6"
+                ></textarea>
+            </div>
+
+            <div class="admin-form__actions">
+
+                <button
+                    class="button button--primary"
+                    type="submit"
+                >
+                    Guardar
+                </button>
+
+                <button
+                    id="cancelButton"
+                    class="button button--secondary"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+    </main>
+
+    <script src="./js/auth.js"></script>
+    <script src="./js/admin.js"></script>
+
+</body>
+
+</html>
