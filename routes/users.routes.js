@@ -5,7 +5,8 @@ import {
     approveUser,
     activateUser,
     deactivateUser,
-    changeUserRole
+    changeUserRole,
+    deleteUser
 } from '../controllers/users.controller.js';
 
 import { authentication } from '../middlewares/authentication.js';
@@ -26,5 +27,6 @@ router.put('/:id/deactivate', deactivateUser);
 
 router.put('/:id/role', changeUserRole);
 
+router.delete('/:id', deleteUser);
 
 export default router;

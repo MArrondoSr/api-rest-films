@@ -349,6 +349,15 @@ if (user.approved === false) {
             </button>
         `;
     }
+        actions += `
+        <button
+            class="button button--delete delete-user-button"
+            type="button"
+            data-id="${user.id}"
+        >
+            Eliminar
+        </button>
+    `;
 }
 
     //---
@@ -438,6 +447,9 @@ usersList.addEventListener('click', async (event) => {
     const roleButton =
         event.target.closest('.change-role-button');
 
+    const deleteUserButton =
+    event.target.closest('.delete-user-button');
+
     try {
         let response;
 
@@ -497,6 +509,23 @@ usersList.addEventListener('click', async (event) => {
                     body: JSON.stringify({
                         role: newRole
                     })
+                }
+            );
+        }
+
+        else if (deleteUserButton) {
+            const confirmed = confirm(
+                '¿Seguro que querés eliminar definitivamente este usuario?'
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            response = await Auth.fetchWithAuth(
+                `/api/users/${deleteUserButton.dataset.id}`,
+                {
+                    method: 'DELETE'
                 }
             );
         }

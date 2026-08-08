@@ -1,4 +1,5 @@
 import { adminDb } from '../data/admin.js';
+import { getAuth } from 'firebase-admin/auth';
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -174,6 +175,45 @@ export const changeUserRole = async (req, res) => {
 
         res.status(500).json({
             message: 'Error al modificar el rol'
+        });
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        if (req.user.id === id) {
+            return res.status(400).json({
+                message: 'No podés eliminar tu propia cuenta'
+            });
+        }
+
+        const userRef = adminDb
+            .collection('users')
+            .doc(id);
+
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).json({
+                message: 'Usuario no encontrado'
+            });
+        }
+
+        await getAuth().deleteUser(id);
+
+        await userRef.delete();
+
+        res.status(200).json({
+            message: 'Usuario eliminado correctamente'
+        });
+
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+
+        res.status(500).json({
+            message: 'Error al eliminar el usuario'
         });
     }
 };
