@@ -13,6 +13,7 @@ const searchInput = document.getElementById('search');
 const searchButton = document.getElementById('searchButton');
 const clearSearchButton = document.getElementById('clearSearchButton');
 const currentUser = Auth.requireAdmin();
+const usersList = document.getElementById('usersList');
 
 if (!currentUser) {
     throw new Error('Acceso restringido a administradores');
@@ -246,6 +247,149 @@ async function searchFilms() {
     }
 }
 
+async function loadUsers() {
+    try {
+        const response = await Auth.fetchWithAuth('/api/users');
+
+        if (!response.ok) {
+            throw new Error('No se pudieron obtener los usuarios');
+        }
+
+        const users = await response.json();
+
+        const pendingUsers = users.filter(user =>
+            user.approved === false
+        );
+
+        usersList.innerHTML = '';
+
+if (users.length === 0) {
+    usersList.innerHTML = `
+        <p style="padding:1rem;">
+            No hay usuarios registrados.
+        </p>
+    `;
+    return;
+}
+
+users.forEach(user => {
+    let statusText = '';
+    let statusClass = '';
+
+    if (user.approved === false) {
+        statusText = 'Pendiente';
+        statusClass = 'status-pending';
+    } else if (user.active === true) {
+        statusText = 'Activo';
+        statusClass = 'status-active';
+    } else {
+        statusText = 'Inactivo';
+        statusClass = 'status-inactive';
+    }
+
+    //---
+    let actions = '';
+
+if (user.approved === false) {
+
+    actions = `
+        <button
+            class="button button--primary approve-user-button"
+            type="button"
+            data-id="${user.id}"
+        >
+            Autorizar
+        </button>
+    `;
+
+} else {
+
+    if (user.active === true) {
+        actions += `
+            <button
+                class="button button--secondary deactivate-user-button"
+                type="button"
+                data-id="${user.id}"
+            >
+                Desactivar
+            </button>
+        `;
+    } else {
+        actions += `
+            <button
+                class="button button--primary activate-user-button"
+                type="button"
+                data-id="${user.id}"
+            >
+                Reactivar
+            </button>
+        `;
+    }
+
+    if (user.role === 'viewer') {
+        actions += `
+            <button
+                class="button button--secondary change-role-button"
+                type="button"
+                data-id="${user.id}"
+                data-role="admin"
+            >
+                Hacer admin
+            </button>
+        `;
+    } else {
+        actions += `
+            <button
+                class="button button--secondary change-role-button"
+                type="button"
+                data-id="${user.id}"
+                data-role="viewer"
+            >
+                Hacer viewer
+            </button>
+        `;
+    }
+}
+
+    //---
+    usersList.innerHTML += `
+        <article class="admin-user">
+
+            <div>
+                ${user.name || '-'}
+            </div>
+
+            <div>
+                ${user.email || '-'}
+            </div>
+
+            <div>
+                ${user.role || 'viewer'}
+            </div>
+
+            <div class="${statusClass}">
+                ${statusText}
+            </div>
+
+            <div class="admin-user__actions">
+                ${actions}
+            </div>
+
+        </article>
+    `;
+});
+
+    } catch (error) {
+        console.error(error);
+
+        usersList.innerHTML = `
+            <p style="padding:1rem;">
+                No se pudieron cargar los usuarios.
+            </p>
+        `;
+    }
+}
+
 newFilmButton.addEventListener('click', openModal);
 
 closeModalButton.addEventListener('click', closeModal);
@@ -281,7 +425,105 @@ clearSearchButton.addEventListener('click', async () => {
     searchInput.focus();
 });
 
+usersList.addEventListener('click', async (event) => {
+    const approveButton =
+        event.target.closest('.approve-user-button');
+
+    const deactivateButton =
+        event.target.closest('.deactivate-user-button');
+
+    const activateButton =
+        event.target.closest('.activate-user-button');
+
+    const roleButton =
+        event.target.closest('.change-role-button');
+
+    try {
+        let response;
+
+        if (approveButton) {
+            response = await Auth.fetchWithAuth(
+                `/api/users/${approveButton.dataset.id}/approve`,
+                {
+                    method: 'PUT'
+                }
+            );
+        }
+
+        else if (deactivateButton) {
+            const confirmed = confirm(
+                '¿Seguro que querés desactivar este usuario?'
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            response = await Auth.fetchWithAuth(
+                `/api/users/${deactivateButton.dataset.id}/deactivate`,
+                {
+                    method: 'PUT'
+                }
+            );
+        }
+
+        else if (activateButton) {
+            response = await Auth.fetchWithAuth(
+                `/api/users/${activateButton.dataset.id}/activate`,
+                {
+                    method: 'PUT'
+                }
+            );
+        }
+
+        else if (roleButton) {
+            const newRole = roleButton.dataset.role;
+
+            const confirmed = confirm(
+                `¿Seguro que querés cambiar este usuario a ${newRole}?`
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            response = await Auth.fetchWithAuth(
+                `/api/users/${roleButton.dataset.id}/role`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        role: newRole
+                    })
+                }
+            );
+        }
+
+        else {
+            return;
+        }
+
+        if (!response.ok) {
+            const data = await response.json();
+
+            throw new Error(
+                data.message ||
+                'No se pudo modificar el usuario'
+            );
+        }
+
+        await loadUsers();
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+});
+
 loadFilms();
+loadUsers();
 
 filmsList.addEventListener('click', (event) => {
     const editButton = event.target.closest('.button--edit');

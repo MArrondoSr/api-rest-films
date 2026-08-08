@@ -39,6 +39,12 @@ export async function login(req, res) {
 
         const userProfile = userDoc.data();
 
+        if (userProfile.approved === false) {
+            return res.status(403).json({
+                message: 'Tu cuenta está pendiente de autorización por un administrador'
+            });
+        }
+
         if (userProfile.active === false) {
             return res.status(403).json({
                 message: 'Usuario inactivo'
@@ -96,11 +102,13 @@ export async function register(req, res) {
                 email: firebaseUser.email,
                 name: name || '',
                 role: 'viewer',
-                active: true
+                approved: false,
+                active: false
             });
 
         return res.status(201).json({
-            message: 'Usuario registrado correctamente'
+            message:
+                'Cuenta creada correctamente. Verificá tu correo electrónico. Luego deberá ser autorizada por un administrador antes de poder acceder.'
         });
 
     } catch (error) {

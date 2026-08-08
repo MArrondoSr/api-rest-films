@@ -405,3 +405,76 @@ body {
 .modal__close:hover{
     background:rgba(255,180,70,.12);
 }
+
+.admin-users {
+    margin-top: 3rem;
+}
+
+.admin-section-header {
+    margin-bottom: 1rem;
+}
+
+.admin-section-header h2 {
+    margin: .25rem 0 0;
+    color: #f5e6c8;
+}
+
+.admin-list__header--users,
+.admin-user {
+    display: grid;
+    grid-template-columns:
+        1.2fr
+        2fr
+        100px
+        130px
+        minmax(260px, 1fr);
+    align-items: center;
+}
+
+.admin-user > div {
+    padding: 1rem;
+}
+
+.admin-user:nth-child(even) {
+    background: #151515;
+}
+
+.admin-user:nth-child(odd) {
+    background: #0f0f0f;
+}
+
+.admin-user__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.admin-user__actions .button {
+    white-space: nowrap;
+}
+
+.status-pending {
+    color: #f9d37a;
+    font-weight: 700;
+}
+
+.status-active {
+    color: #7CFC98;
+    font-weight: 700;
+}
+
+.status-inactive {
+    color: #ff9d9d;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .admin-list__header--users {
+        display: none;
+    }
+
+    .admin-user {
+        grid-template-columns: 1fr;
+        border-bottom: 1px solid #333;
+    }
+}

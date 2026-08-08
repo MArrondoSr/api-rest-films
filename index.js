@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import filmsRoutes from './routes/films.routes.js';
 import authRouter from './routes/auth.routes.js';
 import { authentication } from './middlewares/authentication.js';
+import usersRoutes from './routes/users.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
+
 app.use((req, res, next) => {
     console.log(`Datos recibidos: ${req.method} ${req.url}`);
     next();
@@ -24,9 +26,11 @@ app.use((req, res, next) => {
 
 app.use(express.static(join(__dirname, 'public')));
 
+
 // Routers
 app.use('/auth', authRouter);
 app.use('/api/films', authentication, filmsRoutes);
+app.use('/api/users', usersRoutes);
 
 // 404 al final
 app.use((req, res) => {
