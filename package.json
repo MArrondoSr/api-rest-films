@@ -19,5 +19,10 @@
     "firebase": "^12.14.0",
     "firebase-admin": "^14.2.0",
     "jsonwebtoken": "^9.0.3"
+  },
+  "overrides": {
+  "jwks-rsa": {
+    "jose": "4.15.9"
   }
+}
 }
