@@ -1,8 +1,23 @@
+const params = new URLSearchParams(window.location.search);
+const reason = params.get('reason');
 const form = document.getElementById('login-form');
 const message = document.getElementById('login-message');
 const submitButton = form.querySelector('button[type="submit"]');
 const resendVerificationLink =
     document.getElementById('resendVerificationLink');
+
+    if (reason === 'session-expired') {
+    message.style.color = '#f9d37a';
+    message.textContent =
+        'Tu sesión venció. Iniciá sesión nuevamente.';
+    }
+
+    if (reason === 'inactive') {
+        message.style.color = '#ff9d9d';
+        message.textContent =
+            'Tu cuenta fue desactivada. Consultá con el administrador.';
+    }
+
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -66,6 +81,7 @@ resendVerificationLink?.addEventListener('click', async (event) => {
 
     const message =
         document.getElementById('login-message');
+
 
     if (!email || !password) {
         message.style.color = '#ff9d9d';

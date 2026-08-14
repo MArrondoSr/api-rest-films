@@ -141,9 +141,9 @@ export async function forgotPassword(req, res) {
                 message: 'El email es obligatorio'
             });
         }
-
+        
         await sendPasswordResetEmail(auth, email);
-
+        
         return res.status(200).json({
             message: 'Se envió un correo para restablecer la contraseña'
         });

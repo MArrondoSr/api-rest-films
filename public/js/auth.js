@@ -103,7 +103,7 @@ async function fetchWithAuth(url, options = {}) {
 
     if (response.status === 401) {
         removeToken();
-        window.location.href = '/login.html';
+        window.location.href = '/login.html?reason=session-expired';
 
         throw new Error('La sesión venció o no es válida');
     }
@@ -114,9 +114,9 @@ async function fetchWithAuth(url, options = {}) {
     if (data?.message === 'Usuario inactivo') {
         removeToken();
 
-        window.location.href = '/login.html';
+        window.location.href = '/login.html?reason=inactive';
 
-        throw new Error('La cuenta está desactivada');
+        throw new Error('Usuario inactivo');
     }
     }
 

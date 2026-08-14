@@ -1,6 +1,15 @@
 const gallery = document.getElementById('galeria');
+
 const adminAccess = document.getElementById('adminAccess');
+const currentUserContainer = document.getElementById('currentUser');
+const logoutButton = document.getElementById('logoutButton');
+
 const currentUser = Auth.getCurrentUser();
+
+if (currentUserContainer && currentUser) {
+    currentUserContainer.textContent =
+        `${currentUser.email} — ${currentUser.role}`;
+}
 
 if (adminAccess && currentUser?.role === 'admin') {
     adminAccess.innerHTML = `
@@ -9,6 +18,11 @@ if (adminAccess && currentUser?.role === 'admin') {
         </a>
     `;
 }
+
+logoutButton?.addEventListener('click', () => {
+    Auth.logout();
+});
+
 
 async function loadFilms() {
     try {
