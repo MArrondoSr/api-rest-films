@@ -120,6 +120,28 @@ async function getVideoUrl() {
 
     return fallbackVideoUrl;
 }
+
+async function getSubtitleUrl() {
+    if (!film.subtitleKey) {
+        return null;
+    }
+
+    const response = await Auth.fetchWithAuth(
+        `/api/films/${filmId}/subtitle-url`
+    );
+
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+
+        throw new Error(
+            data.message || 'No se pudieron obtener los subtítulos'
+        );
+    }
+
+    const data = await response.json();
+
+    return data.subtitleUrl;
+}
 const originalPosterHtml = posterContainer?.innerHTML || '';
 let savedVideoTime = 0;
 
@@ -137,6 +159,12 @@ if (
     try {
         const videoUrl = await getVideoUrl();
 
+        let subtitleUrl = null;
+
+        if (film.subtitleKey) {
+            subtitleUrl = await getSubtitleUrl();
+        }
+
         filmDetail.classList.add('film-detail--playing');
 
         posterContainer.innerHTML = `
@@ -146,8 +174,19 @@ if (
                     class="film-detail__player"
                     controls
                     autoplay
+                    crossorigin="anonymous"
                 >
                     <source src="${videoUrl}" type="video/mp4">
+
+                    ${subtitleUrl ? `
+                        <track
+                            kind="subtitles"
+                            src="${subtitleUrl}"
+                            srclang="es"
+                            label="Español"
+                        >
+                    ` : ''}
+
                     Tu navegador no puede reproducir este video.
                 </video>
 

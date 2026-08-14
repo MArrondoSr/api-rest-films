@@ -7,7 +7,8 @@ import {
     createFilm, 
     updateFilm,
     deleteFilm,
-    getFilmVideoUrl
+    getFilmVideoUrl,
+    getFilmSubtitleUrl
 } from '../controllers/films.controller.js';
 
 import { requireAdmin } from '../middlewares/requireAdmin.js';
@@ -21,6 +22,8 @@ router.get('/buscar', searchFilms);
 router.get('/:id', getFilmById);
 
 router.get('/:id/video-url', getFilmVideoUrl);
+
+router.get('/:id/subtitle-url', getFilmSubtitleUrl);
 
 router.post('/', requireAdmin, createFilm);
 

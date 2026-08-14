@@ -160,3 +160,51 @@ export const getFilmVideoUrl = async (req, res) => {
         });
     }
 };
+
+export const getFilmSubtitleUrl = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const film = await getFilmByIdService(id);
+
+        if (!film) {
+            return res.status(404).json({
+                message: 'Película no encontrada'
+            });
+        }
+
+        if (!film.subtitleKey) {
+            return res.status(404).json({
+                message: 'La película no tiene subtítulos disponibles'
+            });
+        }
+
+        const command = new GetObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: film.subtitleKey,
+            ResponseContentType: 'text/vtt; charset=utf-8'
+        });
+
+        const url = await getSignedUrl(
+            r2,
+            command,
+            {
+                expiresIn: 3600
+            }
+        );
+
+        res.status(200).json({
+            subtitleUrl: url
+        });
+
+    } catch (error) {
+        console.error(
+            'Error al generar URL temporal de subtítulos:',
+            error
+        );
+
+        res.status(500).json({
+            message: 'No se pudo generar la URL de subtítulos'
+        });
+    }
+};
