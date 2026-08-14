@@ -6,7 +6,8 @@ import {
     searchFilms,
     createFilm, 
     updateFilm,
-    deleteFilm
+    deleteFilm,
+    getFilmVideoUrl
 } from '../controllers/films.controller.js';
 
 import { requireAdmin } from '../middlewares/requireAdmin.js';
@@ -18,6 +19,8 @@ router.get('/', getAllFilms);
 router.get('/buscar', searchFilms);
 
 router.get('/:id', getFilmById);
+
+router.get('/:id/video-url', getFilmVideoUrl);
 
 router.post('/', requireAdmin, createFilm);
 

@@ -7,6 +7,11 @@ import {
     deleteFilmService
 } from '../services/films.service.js';
 
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+import { r2 } from '../data/r2.js';
+
 export const getAllFilms = async (req, res) => {
     try {
         const films = await getAllFilmsService();
@@ -105,6 +110,53 @@ export const deleteFilm = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "Error al eliminar la película"
+        });
+    }
+};
+
+export const getFilmVideoUrl = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const film = await getFilmByIdService(id);
+
+        if (!film) {
+            return res.status(404).json({
+                message: 'Película no encontrada'
+            });
+        }
+
+        if (!film.videoKey) {
+            return res.status(404).json({
+                message: 'La película no tiene video disponible'
+            });
+        }
+
+        const command = new GetObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: film.videoKey
+        });
+
+        const url = await getSignedUrl(
+            r2,
+            command,
+            {
+                expiresIn: 3600
+            }
+        );
+
+        res.status(200).json({
+            videoUrl: url
+        });
+
+    } catch (error) {
+        console.error(
+            'Error al generar URL temporal:',
+            error
+        );
+
+        res.status(500).json({
+            message: 'No se pudo generar la URL del video'
         });
     }
 };

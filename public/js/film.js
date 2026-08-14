@@ -79,7 +79,7 @@ async function loadFilm() {
                     id="playButton"
                     class="film-detail__play"
                     type="button"
-                    ${film.videoUrl || film.video ? '' : 'disabled'}
+                    ${film.videoKey || film.videoUrl || film.video ? '' : 'disabled'}
                 >
                     ▶ Reproducir
                 </button>
@@ -98,12 +98,45 @@ const posterContainer = document.getElementById('posterContainer');
 const filmDetail = document.getElementById('filmDetail');
 
 
-const videoUrl = film.videoUrl || film.video;
+const fallbackVideoUrl = film.videoUrl || film.video;
+async function getVideoUrl() {
+    if (film.videoKey) {
+        const response = await Auth.fetchWithAuth(
+            `/api/films/${filmId}/video-url`
+        );
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+
+            throw new Error(
+                data.message || 'No se pudo obtener el video'
+            );
+        }
+
+        const data = await response.json();
+
+        return data.videoUrl;
+    }
+
+    return fallbackVideoUrl;
+}
 const originalPosterHtml = posterContainer?.innerHTML || '';
 let savedVideoTime = 0;
 
-if (playButton && posterContainer && filmDetail && videoUrl) {
-    playButton.addEventListener('click', () => {
+if (
+    playButton &&
+    posterContainer &&
+    filmDetail &&
+    (film.videoKey || fallbackVideoUrl)
+) {
+    playButton.addEventListener('click', async () => {
+
+    playButton.disabled = true;
+    playButton.textContent = 'Cargando...';
+
+    try {
+        const videoUrl = await getVideoUrl();
+
         filmDetail.classList.add('film-detail--playing');
 
         posterContainer.innerHTML = `
@@ -161,6 +194,18 @@ if (playButton && posterContainer && filmDetail && videoUrl) {
 
         playButton.disabled = true;
         playButton.textContent = 'Reproduciendo';
+            } catch (error) {
+        console.error('Error al cargar el video:', error);
+
+        alert(error.message);
+
+        playButton.disabled = false;
+
+        playButton.textContent =
+            savedVideoTime > 0
+                ? '▶ Continuar'
+                : '▶ Reproducir';
+    }
     });
 }
 

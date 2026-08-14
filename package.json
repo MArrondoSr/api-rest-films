@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1110.0",
+    "@aws-sdk/s3-request-presigner": "^3.1110.0",
     "body-parser": "^2.3.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -21,8 +23,8 @@
     "jsonwebtoken": "^9.0.3"
   },
   "overrides": {
-  "jwks-rsa": {
-    "jose": "4.15.9"
+    "jwks-rsa": {
+      "jose": "4.15.9"
+    }
   }
-}
 }
