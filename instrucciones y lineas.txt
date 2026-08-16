@@ -1,8 +1,7 @@
-Mi propuesta corta sería:
 
 Convertir uno de tus .srt a .vtt.
 
-ffmpeg -i "D:\Peliculas\Streets_Of_Fire_(1984)\Streets.Of.Fire.srt" "D:\Peliculas\Streets_Of_Fire_(1984)\Streets.Of.Fire.vtt"
+ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.srt" "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.vtt"
 
 
 Subirlo al mismo bucket R2 con rclone. COMO SUBIR MP4 A CLOUFARE
@@ -18,3 +17,5 @@ http://localhost:3000/api/films/4r9xfYQnEYUEvd15UDDu/subtitle-url
 
 
 .\rclone.exe copy "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.mp4" r2:films-test-storage --progress
+
+.\rclone.exe copy "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.vtt" r2:films-test-storage --progress
