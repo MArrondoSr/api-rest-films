@@ -1,7 +1,7 @@
 
 Convertir uno de tus .srt a .vtt.
 
-ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.srt" "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.vtt"
+ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Heavy_Metal_(1981)\Heavy_Metal_1981.srt" "D:\Peliculas\Heavy_Metal_(1981)\Heavy_Metal_1981.vtt"
 
 
 Subirlo al mismo bucket R2 con rclone. COMO SUBIR MP4 A CLOUFARE
@@ -16,6 +16,15 @@ Agregar <track> a film.js.
 http://localhost:3000/api/films/4r9xfYQnEYUEvd15UDDu/subtitle-url
 
 
-.\rclone.exe copy "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.mp4" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\The.Allnighter.1987\The.Allnighter.1987.mp4" r2:films-test-storage --progress
 
-.\rclone.exe copy "D:\Peliculas\Zombeavers_(2014)\Zombeavers.2014.vtt" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\Heavy_Metal_(1981)\Heavy_Metal_1981.vtt" r2:films-test-storage --progress
+
+
+
+ffmpeg -i "D:\Peliculas\Gattaca_(1997)\Gattaca_(1997).mkv" ^
+-map 0:v:0 -map 0:a:0 ^
+-c:v libx264 -preset fast -crf 22 ^
+-c:a copy ^
+-movflags +faststart ^
+"D:\Peliculas\Gattaca_(1997)\Gattaca_(1997)_web.mp4"
