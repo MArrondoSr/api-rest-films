@@ -1,12 +1,14 @@
 
 Convertir uno de tus .srt a .vtt.
 
-ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Heavy_Metal_(1981)\Heavy_Metal_1981.srt" "D:\Peliculas\Heavy_Metal_(1981)\Heavy_Metal_1981.vtt"
+ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.srt" "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.vtt"
 
 
 Subirlo al mismo bucket R2 con rclone. COMO SUBIR MP4 A CLOUFARE
 
-.\rclone.exe copy "D:\Peliculas\Zombeavers_(2014)\Streets.Of.Fire.vtt" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.mp4" r2:films-test-storage --progress
+
+.\rclone.exe copy "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.vtt" r2:films-test-storage --progress
 
 Agregar subtitleKey en Firestore.
 Crear endpoint temporal para el subtítulo.
@@ -28,3 +30,16 @@ ffmpeg -i "D:\Peliculas\Gattaca_(1997)\Gattaca_(1997).mkv" ^
 -c:a copy ^
 -movflags +faststart ^
 "D:\Peliculas\Gattaca_(1997)\Gattaca_(1997)_web.mp4"
+
+
+
+The Allnighter
+Tamar Simon Hoffs
+1987
+108
+comedy / coming-of-age
+USA
+/imagenes/The_Allnighter.jpg
+Tres compañeras de habitación universitarias en el sur de California (Molly, Val y Gina) se preparan para su última noche de juerga antes de la graduación. A lo largo de la noche, las frustraciones salen a la luz mientras buscan el amor verdadero, se meten en problemas con la policía y asisten a una gran fiesta playera que no sale como planeaban.
+
+Pero lo importante es que la quiere ver Pedrito en Australia.
