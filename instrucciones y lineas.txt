@@ -1,14 +1,22 @@
 
 Convertir uno de tus .srt a .vtt.
 
-ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.srt" "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.vtt"
+Las codificaciones que más probablemente te vas a encontrar en subtítulos en español son:
+
+CP1252 — Windows-1252. Muy habitual en .srt antiguos hechos en Windows.
+ISO-8859-1 — también llamada Latin1. Muy común en subtítulos antiguos.
+ISO-8859-15 — similar a Latin1, con algunas diferencias.
+UTF-8 — actualmente la más habitual. Si el SRT ya es UTF-8, normalmente no necesitás -sub_charenc.
+CP850 — DOS/OEM occidental; bastante menos frecuente, pero puede aparecer en archivos viejos.
+
+ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Dirty_Harry_Dead_Pool_(1988)\Dirty.Harry.Dead.Pool.1988.srt" "D:\Peliculas\Dirty_Harry_Dead_Pool_(1988)\Dirty.Harry.Dead.Pool.1988.vtt"
 
 
 Subirlo al mismo bucket R2 con rclone. COMO SUBIR MP4 A CLOUFARE
 
-.\rclone.exe copy "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.mp4" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Magnum_Force_(1973)\Dirty.Harry.Magnum.Force.1973.mp4" r2:films-test-storage --progress
 
-.\rclone.exe copy "D:\Peliculas\Real_Steel_(2011)\Real.Steel.2011.vtt" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Magnum_Force_(1973)\Dirty.Harry.Magnum.Force.1973.vtt" r2:films-test-storage --progress
 
 Agregar subtitleKey en Firestore.
 Crear endpoint temporal para el subtítulo.
