@@ -478,3 +478,51 @@ body {
         border-bottom: 1px solid #333;
     }
 }
+
+/* --------------------------------------------------
+   MENSAJES DE USUARIOS
+-------------------------------------------------- */
+
+.admin-messages {
+    margin-top: 3rem;
+}
+
+.admin-list__header--messages,
+.admin-message {
+    display: grid;
+    grid-template-columns: 160px 220px 1fr 100px;
+    gap: 1rem;
+    align-items: center;
+}
+
+.admin-message {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.admin-message__text {
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.admin-message__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 700px) {
+
+    .admin-list__header--messages {
+        display: none;
+    }
+
+    .admin-message {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+
+    .admin-message > div {
+        padding: 0.15rem 0;
+    }
+}

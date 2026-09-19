@@ -14,6 +14,7 @@ const searchButton = document.getElementById('searchButton');
 const clearSearchButton = document.getElementById('clearSearchButton');
 const currentUser = Auth.requireAdmin();
 const usersList = document.getElementById('usersList');
+const messagesList = document.getElementById('messagesList');
 
 if (!currentUser) {
     throw new Error('Acceso restringido a administradores');
@@ -399,6 +400,101 @@ if (user.approved === false) {
     }
 }
 
+async function loadMessages() {
+    try {
+        const response = await Auth.fetchWithAuth('/api/messages');
+
+        if (!response.ok) {
+            throw new Error('No se pudieron obtener los mensajes');
+        }
+
+        const messages = await response.json();
+
+        messagesList.innerHTML = '';
+
+        if (messages.length === 0) {
+            messagesList.innerHTML = `
+                <p style="padding:1rem;">
+                    No hay mensajes.
+                </p>
+            `;
+
+            return;
+        }
+
+        messages.forEach(message => {
+
+            const date = message.createdAt?._seconds
+                ? new Date(message.createdAt._seconds * 1000)
+                    .toLocaleString('es-AR', {
+                        dateStyle: 'short',
+                        timeStyle: 'short'
+                    })
+                : '-';
+
+            let actions = '';
+
+            if (message.status === 'nuevo') {
+                actions += `
+        <button
+            class="button button--secondary read-message-button"
+            type="button"
+            data-id="${message.id}"
+        >
+            Leído
+        </button>
+    `;
+            }
+
+            actions += `
+    <button
+        class="button button--delete delete-message-button"
+        type="button"
+        data-id="${message.id}"
+    >
+        Eliminar
+    </button>
+`;
+
+            messagesList.innerHTML += `
+                <article class="admin-message">
+
+                    <div>
+                        ${date}
+
+                    </div>
+
+                    <div>
+                        ${message.email || '-'}
+                    </div>
+
+                    <div class="admin-message__text">
+                        ${message.message}
+                    </div>
+
+                    <div>
+                        ${message.status || 'nuevo'}
+                    </div>
+
+                    <div class="admin-message__actions">
+                        ${actions}
+                    </div>
+
+                </article>
+            `;
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        messagesList.innerHTML = `
+            <p style="padding:1rem;">
+                No se pudieron cargar los mensajes.
+            </p>
+        `;
+    }
+}
+
 newFilmButton.addEventListener('click', openModal);
 
 closeModalButton.addEventListener('click', closeModal);
@@ -551,8 +647,69 @@ usersList.addEventListener('click', async (event) => {
     }
 });
 
+
+
 loadFilms();
 loadUsers();
+loadMessages();
+
+messagesList.addEventListener('click', async (event) => {
+
+    const readButton =
+        event.target.closest('.read-message-button');
+
+    const deleteButton =
+        event.target.closest('.delete-message-button');
+
+    try {
+        let response;
+
+        if (readButton) {
+
+            response = await Auth.fetchWithAuth(
+                `/api/messages/${readButton.dataset.id}/read`,
+                {
+                    method: 'PUT'
+                }
+            );
+
+        } else if (deleteButton) {
+
+            const confirmed = confirm(
+                '¿Seguro que querés eliminar este mensaje?'
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            response = await Auth.fetchWithAuth(
+    `/api/messages/${deleteButton.dataset.id}`,
+    {
+        method: 'DELETE'
+    }
+);
+
+        } else {
+            return;
+        }
+
+        if (!response.ok) {
+            const data = await response.json();
+
+            throw new Error(
+                data.message ||
+                'No se pudo modificar el mensaje'
+            );
+        }
+
+        await loadMessages();
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+});
 
 filmsList.addEventListener('click', (event) => {
     const editButton = event.target.closest('.button--edit');

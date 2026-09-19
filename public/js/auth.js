@@ -134,5 +134,3 @@ window.Auth = {
     requireAdmin,
     fetchWithAuth
 };
-
-response.clone()

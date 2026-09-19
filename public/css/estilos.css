@@ -236,3 +236,86 @@ footer {
         flex-wrap: wrap;
     }
 }
+
+/* --------------------------------------------------
+   COMENTARIOS Y SUGERENCIAS
+-------------------------------------------------- */
+
+.sugerencias {
+    max-width: 650px;
+    margin: 2rem 1.5rem 1.5rem;
+    padding-top: 1.5rem;
+
+    border-top: 1px solid #8a5a18;
+}
+
+.sugerencias h2 {
+    margin-bottom: 0.5rem;
+}
+
+.sugerencias > p {
+    margin-bottom: 1rem;
+}
+
+#suggestionForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+#suggestionMessage {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.8rem;
+
+    box-sizing: border-box;
+    resize: vertical;
+
+    border: 1px solid #8a5a18;
+    border-radius: 6px;
+
+    background: #111;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+#suggestionMessage::placeholder {
+    color: #aaa;
+}
+
+#suggestionMessage:focus {
+    outline: 1px solid #d6a52a;
+    border-color: #d6a52a;
+}
+
+#suggestionForm button {
+    align-self: flex-start;
+
+    padding: 0.6rem 1.2rem;
+
+    border: 1px solid #d6a52a;
+    border-radius: 5px;
+
+    background: #2b1708;
+    color: #f2cf55;
+
+    font-family: inherit;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#suggestionForm button:hover {
+    background: #44240c;
+}
+
+#suggestionStatus {
+    min-height: 1.2rem;
+    margin: 0;
+
+    color: #f2cf55;
+    font-size: 0.9rem;
+}

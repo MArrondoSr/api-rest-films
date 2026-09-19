@@ -8,6 +8,7 @@ import filmsRoutes from './routes/films.routes.js';
 import authRouter from './routes/auth.routes.js';
 import { authentication } from './middlewares/authentication.js';
 import usersRoutes from './routes/users.routes.js';
+import messagesRoutes from './routes/messages.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,6 +32,7 @@ app.use(express.static(join(__dirname, 'public')));
 app.use('/auth', authRouter);
 app.use('/api/films', authentication, filmsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/messages', authentication, messagesRoutes);
 
 // 404 al final
 app.use((req, res) => {

@@ -14,9 +14,19 @@ ffmpeg -sub_charenc CP1252 -i "D:\Peliculas\Dirty_Harry_Dead_Pool_(1988)\Dirty.H
 
 Subirlo al mismo bucket R2 con rclone. COMO SUBIR MP4 A CLOUFARE
 
-.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Magnum_Force_(1973)\Dirty.Harry.Magnum.Force.1973.mp4" r2:films-test-storage --progress
+Para ver qué hay:
+.\rclone.exe ls r2:films-test-storage    (muestra los gigas)
+Y para borrar un archivo concreto:
+.\rclone.exe deletefile "r2:films-test-storage/pelicula.mp4"
+URL:
+URL de la película =
+https://pub-f80e7c0f6d8d459a84f00a244a6115f2.r2.dev/Dirty.Harry.Sudden.Impact.1983.mp4
++
+nombre exacto del archivo
 
-.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Magnum_Force_(1973)\Dirty.Harry.Magnum.Force.1973.vtt" r2:films-test-storage --progress
+.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Dead_Pool_(1988)\Dirty.Harry.Dead.Pool.1988.mp4" r2:films-test-storage --progress
+
+.\rclone.exe copy "D:\Peliculas\Dirty_Harry_Dead_Pool_(1988)\Dirty.Harry.Dead.Pool.1988.vtt" r2:films-test-storage --progress
 
 Agregar subtitleKey en Firestore.
 Crear endpoint temporal para el subtítulo.
