@@ -1,0 +1,147 @@
+.catalogo {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.catalogo__header {
+    margin-bottom: 2rem;
+}
+
+.catalogo__header h2 {
+    margin-bottom: 0.5rem;
+}
+
+.catalogo__busqueda {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    margin-top: 1.5rem;
+}
+
+#catalogSearch {
+    width: 100%;
+    max-width: 500px;
+
+    padding: 0.75rem 1rem;
+
+    border: 1px solid #8a5a18;
+    border-radius: 6px;
+
+    background: #111;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+#catalogSearch:focus {
+    outline: 1px solid #d6a52a;
+    border-color: #d6a52a;
+}
+
+#catalogCount {
+    white-space: nowrap;
+}
+
+.catalogo__galeria {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(160px, 1fr));
+
+    gap: 1.5rem;
+}
+
+.catalogo-card {
+    overflow: hidden;
+
+    border: 1px solid #8a5a18;
+    border-radius: 8px;
+
+    background: #111;
+}
+
+.catalogo-card img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 2 / 3;
+
+    object-fit: cover;
+}
+
+.catalogo-card__info {
+    padding: 0.8rem;
+}
+
+.catalogo-card__info h3 {
+    margin: 0 0 0.35rem;
+
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.catalogo-card__info p {
+    margin: 0;
+
+    font-size: 0.9rem;
+}
+
+.catalogo__sin-resultados {
+    grid-column: 1 / -1;
+
+    padding: 2rem 0;
+}
+
+
+@media (max-width: 600px) {
+
+    .catalogo {
+        padding: 1rem;
+    }
+
+    .catalogo__busqueda {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .catalogo__galeria {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 1rem;
+    }
+}
+
+.catalogo-card__request {
+    width: 100%;
+
+    margin-top: 0.8rem;
+    padding: 0.55rem 0.75rem;
+
+    border: 1px solid #d6a52a;
+    border-radius: 5px;
+
+    background: #2b1708;
+    color: #f2cf55;
+
+    font-family: inherit;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.catalogo-card__request:hover:not(:disabled) {
+    background: #44240c;
+}
+
+.catalogo-card__request:disabled {
+    cursor: default;
+    opacity: 0.7;
+}

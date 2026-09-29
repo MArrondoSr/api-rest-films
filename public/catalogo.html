@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Películas disponibles | API REST Films</title>
+
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/estilos.css">
+    <link rel="stylesheet" href="./css/catalogo.css">
+</head>
+
+<body>
+
+    <div class="session-bar">
+
+        <div id="currentUser"></div>
+
+        <div class="session-actions">
+
+            <a
+                href="/"
+                class="session-button"
+            >
+                Cartelera
+            </a>
+
+            <button
+                id="logoutButton"
+                class="session-button"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+    <header class="marquesina">
+        <div class="marquesina__luces"></div>
+
+        <h1>API REST FILMS</h1>
+
+        <p>Biblioteca de películas disponibles</p>
+    </header>
+
+    <main class="catalogo">
+
+        <section class="catalogo__header">
+
+            <h2>Películas disponibles</h2>
+
+            <p>
+                Estas películas forman parte de nuestra biblioteca.
+                Podés solicitar que agreguemos alguna a la cartelera.
+            </p>
+
+            <div class="catalogo__busqueda">
+
+                <input
+                    type="search"
+                    id="catalogSearch"
+                    placeholder="Buscar película..."
+                >
+
+                <span id="catalogCount"></span>
+
+            </div>
+
+        </section>
+
+        <section
+            class="catalogo__galeria"
+            id="catalogGallery"
+        ></section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 API REST FILMS</p>
+    </footer>
+
+    <script src="./js/auth.js"></script>
+    <script src="./js/catalogo.js"></script>
+
+</body>
+
+</html>
